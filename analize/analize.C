@@ -30,9 +30,9 @@ void analize(string file_ini, int number){
   for(int i=0;i<number;i++) {
     std::string file;
     if(number==1) {
-      file = "../SummerChallenge/"+file_ini+".root";
+      file = "../data/"+file_ini+".root";
     } else {
-      file = "../SummerChallenge/"+file_ini+"/"+file_ini+"_"+std::to_string(i)+".root";
+      file = "../data/"+file_ini+"/"+file_ini+"_"+std::to_string(i)+".root";
     }
     TFile* tf = new TFile(file.c_str());
     TH1F* th1 = (TH1F*)tf->Get("ADC_HIGH_0");
