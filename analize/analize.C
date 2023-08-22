@@ -5,11 +5,12 @@
 #include "TF1.h"
 #include "TH1F.h"
 #include "TROOT.h"
-#include <iostream>
-#include <cstdio>
-#include <string>
-#include <fstream>
+#include <algorithm>
 #include <cmath>
+#include <cstdio>
+#include <fstream>
+#include <iostream>
+#include <string>
 
 double count(TH1F*);
 
@@ -32,10 +33,13 @@ void analize(string file_ini, int number){
     if(number==1) {
       file = "../data/"+file_ini+".root";
     } else {
-      file = "../data/"+file_ini+"/"+file_ini+"_"+std::to_string(i)+".root";
+      std::string s_i = std::to_string(i);
+      s_i = std::string(std::max(0, 4 - (int)s_i.size()), '0') + s_i;
+      file = "../data/" + file_ini + "/" + file_ini + "_" + s_i + ".root";
     }
     TFile* tf = new TFile(file.c_str());
     TH1F* th1 = (TH1F*)tf->Get("ADC_HIGH_0");
+    if(!th1) continue;
     n=i;
     photon_n=count(th1);
     tree->Fill();
@@ -46,7 +50,8 @@ void analize(string file_ini, int number){
   }
 
   TGraph* tg1 = new TGraph(number, x, y) ;
-  tg1->Draw();
+  tg1-> SetMarkerStyle(20);
+  tg1->Draw("ap");
   result->cd();
   tg1->Write();
   result->Write();
@@ -55,13 +60,13 @@ void analize(string file_ini, int number){
 
 double count(TH1F* t){
   double a=74.1558,b=836.127;
-  const int n=16;
+  const int n=40;
   double area[n];
   for(int i=0;i<n;i++) {
     area[i] = t->Integral(t->FindBin(b+a*(i-0.5)), t->FindBin(b+a*(i+0.5)), "width");
   }
 
-  for(int i=0;i<n;i++) std::cout << area[i] << std::endl;
+  //for(int i=0;i<n;i++) std::cout << area[i] << std::endl;
   double sum_0 = 0;
   double sum_1 = 0;
   for(int i=0;i<n;i++) sum_0 += area[i];
