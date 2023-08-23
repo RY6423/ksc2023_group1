@@ -37,7 +37,7 @@ void analize(string file_ini, int number){
       s_i = std::string(std::max(0, 4 - (int)s_i.size()), '0') + s_i;
       file = "../data/" + file_ini + "/" + file_ini + "_" + s_i + ".root";
     }
-    TFile* tf = new TFile(file.c_str());
+    TFile* tf = TFile::Open(file.c_str());
     TH1F* th1 = (TH1F*)tf->Get("ADC_HIGH_0");
     if(!th1) continue;
     n=i;
@@ -50,9 +50,9 @@ void analize(string file_ini, int number){
   }
 
   TGraph* tg1 = new TGraph(number, x, y) ;
+  result->cd();
   tg1-> SetMarkerStyle(20);
   tg1->Draw("ap");
-  result->cd();
   tg1->Write();
   result->Write();
   result->Close();
