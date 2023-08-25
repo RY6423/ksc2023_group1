@@ -9,37 +9,24 @@
 #include <string>
 #include <fstream>
 #include <cmath>
+const int n_max = 30;
 
 double gaus_multi(const double *x, const double *p){
-  return p[0]*TMath::Gaus(x[0],p[1],p[2])
-  + p[3]*TMath::Gaus(x[0],p[4],p[5])
-  + p[6]*TMath::Gaus(x[0],p[7],p[8])
-  + p[9]*TMath::Gaus(x[0],p[10],p[11])
-  + p[12]*TMath::Gaus(x[0],p[13],p[14])
-  + p[15]*TMath::Gaus(x[0],p[16],p[17])
-  + p[18]*TMath::Gaus(x[0],p[19],p[20])
-  + p[21]*TMath::Gaus(x[0],p[22],p[23]);
+  double result=0;
+  for(int i=0;i<n_max) result += p[i*3]*TMath::Gaus(x[0],p[i*3+1],p[i*3+2]);
+  return result;
 }
 
 void calib(TH1I* t){
   TCanvas* canvas = new TCanvas("c","",0,0,600,400);
 
-  //define fit function
-  TF1 *func = new TF1("func",gaus_multi,0,2000,24);
-  //set initial parameter 
-  double _const[8] = {13,51,74,86,63,56,41,25};
-  for(int i=0;i<8;i++) {
-    func->SetParameter(i*3,_const[i]);
-    func->SetParameter(i*3+1,836+74*i);
-    func->SetParameter(i*3+2,20);
-    func->SetParName(i * 3, ("const" + std::to_string(i)).c_str());
-    func->SetParName(i*3+1,("mean" + std::to_string(i)).c_str());
-    func->SetParName(i*3+2,("sigma" + std::to_string(i)).c_str());
+  TF1* func_all = new TF1("func_all",gaus_multi,0,2000,3*n_max)
+  for(int i =0;i<n_max;i++) {
+    t->SetParameter(i*3+1,)
   }
 
   //fit//
   func->SetNpx(10000);
-  t->Fit(func,"","",800,1600);
   //func->Dump();
   //for(int i;i<8)
   std::ofstream ofs("calib.dat");
