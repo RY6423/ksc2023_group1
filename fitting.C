@@ -16,7 +16,7 @@
 double table(const double *x, const double *p){
   const double sensor_size=p[0];
   if(-sensor_size/2<x[0]&&x[0]<sensor_size/2){
-    return 1/sensor_size/2;
+    return 1/sensor_size;
   } else {
     return 0.;
   }
@@ -26,7 +26,7 @@ void fitting(int file_n_pre) {
   //ファイルオープン
   std::string file_n = std::to_string(file_n_pre);
   std::string file_ini = "ksc_"+std::string(std::max(0, 3 - (int)file_n.size()), '0') + file_n;
-  std::string file = "out/" + file_ini + "/" + file_ini + "_analize.root";
+  std::string file = "out/" + file_ini + "/" + file_ini + "_analize_new.root";
   TFile* tf = TFile::Open(file.c_str());
   TGraphErrors* th1 = (TGraphErrors*)tf->Get("Graph");
 
@@ -36,14 +36,14 @@ void fitting(int file_n_pre) {
   TF1* f_uniform = new TF1("f_uniform",table,-10,10,1);
   TF1Convolution* f_conv = new TF1Convolution("func", "f_uniform", -5, 35, true);
   TF1* f = new TF1("f", *f_conv, 0, 30, f_conv->GetNpar());
-  f->SetParameters(2,10053,0.02,0.04,236,6,14,-0.01,1.9);
+  f->SetParameters(0.038,10053,0.02,0.04,236,0.13,15,0,1.9);
   f->SetNpx(10000);
   th1->Fit("f","","",-5,35);
   TLegend *legend = new TLegend( 0.65, 0.68, 0.84, 0.78) ; //（）の中は位置の指定（左下の x , y 、右上の x , y ）
   legend->AddEntry(th1, "measurement result", "pe");            // AddEntry( pointer , "interpretation" , "option" )
   legend->AddEntry(f, "fitting" , "pl") ; // AddEntry( pointer , "interpretation" , "option" )
-  f->Draw();
-  th1->Draw("same ap");
-  legend->Draw();
+  th1->Draw("ap");
+  f->Draw("same");
+  legend->Draw("ap");
   canvas -> Print(("out/"+file_ini+"/"+file_ini+"_fitting.pdf").c_str());
 }
