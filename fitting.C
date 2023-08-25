@@ -39,7 +39,11 @@ void fitting(int file_n_pre) {
   f->SetParameters(2,10053,0.02,0.04,236,6,14,-0.01,1.9);
   f->SetNpx(10000);
   th1->Fit("f","","",-5,35);
+  TLegend *legend = new TLegend( 0.65, 0.68, 0.84, 0.78) ; //（）の中は位置の指定（左下の x , y 、右上の x , y ）
+  legend->AddEntry(th1, "measurement result", "pe");            // AddEntry( pointer , "interpretation" , "option" )
+  legend->AddEntry(f, "fitting" , "pl") ; // AddEntry( pointer , "interpretation" , "option" )
   f->Draw();
   th1->Draw("same ap");
+  legend->Draw();
   canvas -> Print(("out/"+file_ini+"/"+file_ini+"_fitting.pdf").c_str());
 }
