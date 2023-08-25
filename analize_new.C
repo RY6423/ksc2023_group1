@@ -55,7 +55,7 @@ void analize_new(int file_n_pre,double inter) {
   mkdir(("out/"+file_ini).c_str(),0777);
   TFile* result = new TFile(("out/"+file_ini+"/"+file_ini+"_analize_new.root").c_str(), "recreate");
 
-  TGraphErrors* tg1 = new TGraph(number - error_n, x, y);
+  TGraphErrors* tg1 = new TGraphErrors(number - error_n, x, y, nullptr, y_e);
 
   result->cd();
   //tg1-> SetMarkerStyle(4);
@@ -74,8 +74,8 @@ void analize_new(int file_n_pre,double inter) {
 void count(double par[2],TH1F* t){
   double area = t->Integral(t->FindBin(calib_b-calib_a*0.5), t->FindBin(calib_b+calib_a*0.5), "width");
 
-  par[0]=area/t->GetEntries();
-  par[1]=0;
+  par[0]=1-area/t->GetEntries();
+  par[1]=1/std::sqrt(area);
 
   std::cout << "average:" << par[0] << "+-" << par[1] << std::endl;
   return;
