@@ -29,13 +29,9 @@ void calib(int file_i,int f_number){
 
   TCanvas* canvas = new TCanvas("c","",0,0,600,400);
 
+  TF1* func[n_max];
   TF1* func_all = new TF1("func_all",gaus_multi,0,2000,3*n_max+1);
   for(int i =0;i<n_max;i++) {
-    func_all->SetParameter(i*3+0,20);
-    func_all->SetParameter(i*3+1,i*74+836);
-    func_all->SetParameter(i*3+2,20);
-    func_all->SetParLimits(i*3+1,(i-0.3)*74+836,(i+0.3)*74+836);
-    func_all->SetParLimits(i*3+2,0,50);
   }
   func_all->SetParameter(n_max*3,0);
   
