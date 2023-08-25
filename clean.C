@@ -10,9 +10,9 @@
 #include <string>
 #include <sys/stat.h>
 
-std::string file_raw = "../data";
+std::string file_raw = "..";
 
-void clean(int filen_pre) {
+void clean(int file_n_pre) {
   std::string file_n = std::to_string(file_n_pre);
   std::string file_ini = "ksc_"+std::string(std::max(0, 3 - (int)file_n.size()), '0') + file_n;
 
@@ -30,19 +30,18 @@ void clean(int filen_pre) {
 
     //コピー
     TH1F* th1 = (TH1F*)tf->Get("ADC_HIGH_0");
-    TH1F* th1_copy = th1->Clone()
 
     //書き込みファイルオープン
-    mkdir(("out/"+file_ini).c_str(),0777);
+    mkdir(("data/"+file_ini).c_str(),0777);
     std::string file_w =  "data/" + file_ini + "/" + file_ini + "_" + s_i + ".root";
     TFile* result = new TFile(file_w.c_str(), "recreate");
 
+    number++;
     if(!th1) continue;
 
     //書き込み
-    th1->Write();
-    result->Write();
+    TH1F* th1_copy = (TH1F*)th1->Clone();
+    th1_copy->Write();
     result->Close();
-    number++;
   }
 }
