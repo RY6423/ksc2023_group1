@@ -10,6 +10,7 @@
 #include <fstream>
 #include <cmath>
 const int n_max = 20;
+double calib_a=74.1558,calib_b=836.127;
 
 double gaus_multi(const double *x, const double *p){
   double result=0;
@@ -30,9 +31,14 @@ void calib(int file_i,int f_number){
   TCanvas* canvas = new TCanvas("c","",0,0,600,400);
 
   TF1* func[n_max];
-  TF1* func_all = new TF1("func_all",gaus_multi,0,2000,3*n_max+1);
   for(int i =0;i<n_max;i++) {
+    func[i] = new TF1(("func"+std::to_string(n_max)).c_str())
+    th1->Fit(("func"+std::to_string(n_max)).c_str(),"","",calib_a+calib_b*(i-0.5),calib_a+calib_b*(i+0.5))
   }
+
+  std::string fit_string ="";
+
+  TF1* func_all = new TF1("func_all",gaus_multi,0,2000,3*n_max+1);
   func_all->SetParameter(n_max*3,0);
   
   std::string file_out="out/calib/"+file_ini+"_"+number_fill+"_calib";

@@ -41,11 +41,15 @@ void fitting_new(int file_n_pre) {
   f->FixParameter(4,236);
   f->SetNpx(10000);
   th1->Fit("f","","",-5,35);
-  TLegend *legend = new TLegend( 0.65, 0.68, 0.84, 0.78) ; //（）の中は位置の指定（左下の x , y 、右上の x , y ）
+  TLegend *legend = new TLegend( 0.5, 0.6, 0.84, 0.78) ; //（）の中は位置の指定（左下の x , y 、右上の x , y ）
   legend->AddEntry(th1, "measurement result", "pe");            // AddEntry( pointer , "interpretation" , "option" )
   legend->AddEntry(f, "fitting" , "pl") ; // AddEntry( pointer , "interpretation" , "option" )
-  th1->Draw("ap");
-  f->Draw("same");
+  th1->GetXaxis()->SetTitle("position(mm)");
+  th1->GetXaxis()->SetTitleSize(0.05);
+  th1->GetYaxis()->SetTitle("number of photons");
+  th1->GetYaxis()->SetTitleSize(0.05);
+  f->Draw();
+  th1->Draw("same ap");
   legend->Draw("ap");
   canvas -> Print(("out/"+file_ini+"/"+file_ini+"_fitting.pdf").c_str());
 }
